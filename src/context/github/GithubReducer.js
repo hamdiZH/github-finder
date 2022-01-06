@@ -1,22 +1,40 @@
+import {GET_USER_START, GET_USER_SUCCESS, GET_USERS_START} from "./GithubTypes";
+import {GET_USERS_SUCCESS} from "./GithubTypes";
+import {CLEAR_USERS} from "./GithubTypes";
+
 const githubReducer = (state, action) => {
   switch (action.type) {
-    case 'GET_USERS_START':
+    /* USERS CASES*/
+    case GET_USERS_START:
       return {
         ...state,
         loading: true
       }
 
-    case 'GET_USERS_SUCCESS':
+    case GET_USERS_SUCCESS:
       return {
         ...state,
         users: action.payload,
         loading: false
       }
 
-    case 'CLEAR_USERS':
+    case CLEAR_USERS:
       return {
         ...state,
         users: [],
+      }
+  // USER Cases
+    case GET_USER_START:
+      return  {
+        ...state,
+        loading: true
+      }
+
+    case GET_USER_SUCCESS:
+      return {
+        ...state,
+        user: action.payload,
+        loading: false,
       }
 
     default: return state;
