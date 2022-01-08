@@ -1,8 +1,6 @@
 import {
-  GET_USER_REPOS_START,
-  GET_USER_REPOS_SUCCESS,
-  GET_USER_START,
-  GET_USER_SUCCESS,
+  GET_USER_AND_REPOS_START,
+  GET_USER_AND_REPOS_SUCCESS,
   GET_USERS_START
 } from "./GithubTypes";
 import {GET_USERS_SUCCESS} from "./GithubTypes";
@@ -29,31 +27,18 @@ const githubReducer = (state, action) => {
         ...state,
         users: [],
       }
-  // USER Cases
-    case GET_USER_START:
+  // USER And Repo Cases
+    case GET_USER_AND_REPOS_START:
       return  {
         ...state,
         loading: true
       }
 
-    case GET_USER_SUCCESS:
+    case GET_USER_AND_REPOS_SUCCESS:
       return {
         ...state,
-        user: action.payload,
-        loading: false,
-      }
-
-      // Repos cases
-    case GET_USER_REPOS_START:
-      return {
-        ...state,
-        loading: true,
-      }
-
-    case GET_USER_REPOS_SUCCESS:
-      return {
-        ...state,
-        repos: action.payload,
+        user: action.payload.user,
+        repos: action.payload.repos,
         loading: false,
       }
 
