@@ -1,6 +1,12 @@
 import {createContext, useReducer} from "react";
 import githubReducer from "./GithubReducer";
-import {GET_USER_START, GET_USER_SUCCESS, GET_USERS_START} from "./GithubTypes";
+import {
+  GET_USER_REPOS_START,
+  GET_USER_REPOS_SUCCESS,
+  GET_USER_START,
+  GET_USER_SUCCESS,
+  GET_USERS_START
+} from "./GithubTypes";
 import {GET_USERS_SUCCESS} from "./GithubTypes";
 import {CLEAR_USERS} from "./GithubTypes";
 
@@ -14,6 +20,7 @@ export const GithubProvider = ({children}) => {
   const initialState = {
     users: [],
     user: {},
+    repos: [],
     loading: false
   }
   const [state, dispatch] = useReducer(githubReducer, initialState);
@@ -65,6 +72,7 @@ export const GithubProvider = ({children}) => {
     dispatch({
       type: GET_USER_START
     })
+
     const response = await fetch(`${GITHUB_URL}/users/${login}`, {
       headers: {
         Authorization: `${GITHUB_TOKEN}`
@@ -81,8 +89,33 @@ export const GithubProvider = ({children}) => {
         payload: data,
       })
     }
-
   }
+
+  // Get User Repos
+  const getUserRepos = async (login) => {
+    dispatch({
+      type: GET_USER_REPOS_START
+    })
+
+    const params = new URLSearchParams({
+      sort: 'created',
+      per_page: 10,
+    })
+
+    const response = await fetch(
+      `${GITHUB_URL}/users/${login}/repos?${params}`, {
+      headers: {
+        Authorization: `${GITHUB_TOKEN}`
+      }
+    })
+    // const data = await response.json()
+    const data = await response.json()
+    dispatch({
+      type: GET_USER_REPOS_SUCCESS,
+      payload: data,
+    })
+  }
+
 
   // Clear Users from state
   const clearUsers = () => {
@@ -95,9 +128,11 @@ export const GithubProvider = ({children}) => {
       users: state.users,
       loading: state.loading,
       user: state.user,
+      repos: state.repos,
       searchUsers,
       clearUsers,
       getUser,
+      getUserRepos,
     }}>
       {children}
     </GithubContext.Provider>
